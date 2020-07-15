@@ -1,0 +1,95 @@
+<div class="container">
+  <div class="container mt-3 py-2 shadow-lg p-3 mb-3 rounded ">
+    <div class="row">
+      <div class="col-md-10 mx-auto">
+        <form>
+          <div class="form-group row">
+            <div class="col-sm-6">
+              <input type="number" min="1" [(ngModel)]="invoiceNumberInput" name="invoiceNumber" class="form-control"
+                placeholder="Invoice Number">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-8"></div>
+            <div class="col-1">
+              <button type="button" class="btn px-4 float-right" style="background-color: #00c6ff;"
+                (click)="ReadInvoice()">Read</button>
+            </div>
+            <button type="button" class="btn px-4 float-right" style="background-color: #00c6ff;"
+              (click)="Reset()">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="table-responsive col-11">
+      <table mat-table [dataSource]="dataSource" class="col-12">
+        <ng-container matColumnDef="Name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element,let ind = index">
+            <input type="text" placeholder="Pick one" aria-label="Number" [value]="element.Name" matInput [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)='ItemChanged($event.option.value.Id,ind)'
+              [displayWith]="displayFn">
+              <mat-option *ngFor="let product of products" [value]="product">
+                {{product.Name}}
+              </mat-option>
+            </mat-autocomplete>
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <ng-container matColumnDef="Description">
+          <th mat-header-cell *matHeaderCellDef> Description </th>
+          <td mat-cell *matCellDef="let element"> {{element.Description}} </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <ng-container matColumnDef="Quantity">
+          <th mat-header-cell *matHeaderCellDef> Quantity </th>
+          <td mat-cell *matCellDef="let element,let ind=index">
+            <input type="number" [value]="element.Quantity" (change)="QuantityChanged($event.target.value,ind)" min="0">
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <ng-container matColumnDef="UnitPrice">
+          <th mat-header-cell *matHeaderCellDef> Unit Price </th>
+          <td mat-cell *matCellDef="let element"> {{element.UnitPrice |currency:'USD':true}} </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <ng-container matColumnDef="Total">
+          <th mat-header-cell *matHeaderCellDef> Total </th>
+          <td mat-cell *matCellDef="let element"> {{element.Total}} </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+
+        <ng-container matColumnDef="Delete">
+          <th mat-header-cell *matHeaderCellDef> Delete </th>
+          <td mat-cell *matCellDef="let ind=index">
+            <button mat-icon-button color="warn" (click)="DeleteItem(ind)">
+              <mat-icon class="mat-18">delete</mat-icon>
+            </button>
+          </td>
+          <td mat-footer-cell *matFooterCellDef> Total : {{invoiceTotal|currency:'USD':true}} </td>
+        </ng-container>
+
+      </table>
+    </div>
+    <div class="col-1">
+      <button type="button" class="btn px-4 float-right" style="background-color: #00c6ff;"
+        (click)="AddItem()">Add Item</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4"></div>
+    <div class="col-1">
+      <button type="button" class="btn px-4 float-right" style="background-color: #00c6ff;"
+        (click)="SaveInvoice()">Save</button>
+    </div>
+    <button type="button" class="btn px-4 float-right" style="background-color: #00c6ff;"
+      (click)="DeleteInvoice()">Delete</button>
+  </div>
+</div>
+<notifier-container></notifier-container>
